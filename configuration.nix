@@ -9,7 +9,7 @@
     curl
     wget
     htop
-    docker
+    inetutils
   ];
 
   networking.hostName = "dean-homelab";
@@ -74,6 +74,13 @@
     ports = [ 22 ];
     settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "no";
+  };
+
+  virtualisation.docker = {
+      enable = true;
+      daemon.settings = {
+        insecure-registries = [ "dean-homelab:5000" ];
+      };
   };
 
   boot.loader.systemd-boot.enable = true;
