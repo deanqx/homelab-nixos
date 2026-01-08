@@ -23,15 +23,14 @@
     keyMap = "us";
   };
 
-  users.users.dean = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable `sudo` for the user.
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean_home_linux"
-    ];
-    shell = pkgs.zsh;
-    packages = with pkgs; [
-    ];
+  programs.git = {
+    enable = true;
+    config = {
+      init.defaultBranch = "main";
+      user.name = "deanqx";
+      user.email = "dean@kowatsch.de";
+      push.autoSetupRemote = true;
+    };
   };
 
   programs.vim = {
@@ -59,21 +58,19 @@
     theme = "robbyrussell";
   };
 
-  programs.git = {
-    enable = true;
-    config = {
-      init.defaultBranch = "main";
-      user.name = "deanqx";
-      user.email = "dean@kowatsch.de";
-      push.autoSetupRemote = true;
-    };
-  };
-
   services.openssh = {
     enable = true;
-    ports = [ 22 ];
+    ports = [ 54359 ];
     settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "no";
+    extraConfig = ''
+      Match user git
+        AllowTcpForwarding no
+        AllowAgentForwarding no
+        PasswordAuthentication no
+        PermitTTY no
+        X11Forwarding no
+    '';
   };
 
   virtualisation.docker = {
@@ -82,6 +79,35 @@
         insecure-registries = [ "dean-homelab:5000" ];
       };
   };
+
+  users.users.dean = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ]; # Enable `sudo` for the user.
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean_home_linux"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAmMvFppJL6njZ45WthZ3kM1Aq7bdPjbp+IsHUapOMm deanqx-pad"
+    ];
+    shell = pkgs.zsh;
+    packages = with pkgs; [
+    ];
+  };
+
+  # enable git server (https://nixos.wiki/wiki/Git)
+  # create repo called ".git":
+  # sudo -u git sh -c "git init --bare ~/.git"
+  users.users.git = {
+    isSystemUser = true;
+    group = "git";
+    home = "/srv/git";
+    createHome = true;
+    shell = "${pkgs.git}/bin/git-shell";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean_home_linux"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAmMvFppJL6njZ45WthZ3kM1Aq7bdPjbp+IsHUapOMm deanqx-pad"
+    ];
+  };
+
+  users.groups.git = {};
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
