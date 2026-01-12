@@ -7,6 +7,7 @@
   environment.systemPackages = with pkgs; [
     tmux
     curl
+    trash-cli
     wget
     htop
     inetutils
