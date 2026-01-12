@@ -11,6 +11,7 @@
     tree
     trash-cli
     htop
+    sysstat
     inetutils
   ];
 
@@ -73,6 +74,12 @@
         PermitTTY no
         X11Forwarding no
     '';
+  };
+
+  services.atd.enable = true;
+  services.sysstat = {
+      enable = true;
+      collect-frequency = "*:00/1";
   };
 
   virtualisation.docker = {
