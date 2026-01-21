@@ -77,6 +77,29 @@
     '';
   };
 
+  services.nginx = {
+    enable = true;
+    user = "nginx";
+    group = "nginx";
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+
+    # home assistant
+    virtualHosts."deanqx.kowi.it" =  {
+      forceSSL = true;
+      sslCertificate = "/etc/ssl/certs/server.crt";
+      sslCertificateKey = "/etc/ssl/private/server.key";
+
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:8123/";
+        proxyWebsockets = true;
+      };
+    };
+  };
+
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ 443 ];
+
   services.atd.enable = true;
   services.sysstat = {
       enable = true;
