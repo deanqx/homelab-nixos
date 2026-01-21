@@ -13,6 +13,7 @@
     htop
     sysstat
     inetutils
+    openssl
   ];
 
   networking.hostName = "dean-homelab";
