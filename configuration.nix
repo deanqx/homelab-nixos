@@ -77,6 +77,17 @@
     '';
   };
 
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [
+    80 # ACME (SSL certificate)
+    47539 # home assistant
+  ];
+
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "dean@kowatsch.de";
+  };
+
   services.nginx = {
     enable = true;
     user = "nginx";
@@ -84,11 +95,18 @@
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
 
-    # home assistant
     virtualHosts."deanqx.kowi.it" =  {
-      forceSSL = true;
-      sslCertificate = "/etc/ssl/certs/server.crt";
-      sslCertificateKey = "/etc/ssl/private/server.key";
+      enableACME = true;
+      forceSSL = true; # required for ssl to be added to the config
+
+      listen = [{
+        addr = "0.0.0.0";
+        port = 80;
+      }{
+        addr = "0.0.0.0";
+        port = 47539;
+        ssl = true;
+      }];
 
       locations."/" = {
         proxyPass = "http://127.0.0.1:8123/";
@@ -96,9 +114,6 @@
       };
     };
   };
-
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 443 ];
 
   services.atd.enable = true;
   services.sysstat = {
