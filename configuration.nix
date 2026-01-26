@@ -3,25 +3,9 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  environment.systemPackages = with pkgs; [
-    tmux
-    curl
-    wget
-    tree
-    trash-cli
-    htop
-    sysstat
-    inetutils
-    openssl
-  ];
-
-  networking.hostName = "dean-homelab";
-  networking.networkmanager.enable = true;
-
   time.timeZone = "Europe/Berlin";
-
   i18n.defaultLocale = "en_US.UTF-8";
+
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
@@ -41,25 +25,47 @@
     enable = true;
     defaultEditor = true;
   };
-  environment.variables.VIMINIT = "source /etc/vimrc";
-  environment.etc."vimrc".text = ''
-    syntax on
-    set number
-    set relativenumber
-    set autoindent
-    set smartindent
-    set smarttab       " Tab behaves according to shiftwidth
-    set expandtab      " Convert tabs to spaces (optional, but recommended)
-    set shiftwidth=4   " Default number of spaces for each indent
-    set tabstop=4      " Number of spaces a tab counts for
-    set softtabstop=4  " How many spaces Tab inserts in insert mode
-  '';
 
-  programs.zsh.enable = true;
-  programs.zsh.ohMyZsh = {
+  programs.zsh = {
     enable = true;
-    plugins = [ "sudo" ];
-    theme = "robbyrussell";
+    ohMyZsh = {
+      enable = true;
+      plugins = [ "sudo" ];
+      theme = "robbyrussell";
+    };
+  };
+
+  environment = {
+    systemPackages = with pkgs; [
+      tmux
+      curl
+      wget
+      tree
+      trash-cli
+      htop
+      sysstat
+      inetutils
+      openssl
+    ];
+
+    variables.VIMINIT = "source /etc/vimrc";
+    etc."vimrc".text = ''
+      syntax on
+      set number
+      set relativenumber
+      set autoindent
+      set smartindent
+      set smarttab       " Tab behaves according to shiftwidth
+      set expandtab      " Convert tabs to spaces (optional, but recommended)
+      set shiftwidth=4   " Default number of spaces for each indent
+      set tabstop=4      " Number of spaces a tab counts for
+      set softtabstop=4  " How many spaces Tab inserts in insert mode
+    '';
+  };
+
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "dean@kowatsch.de";
   };
 
   services.openssh = {
@@ -77,15 +83,26 @@
     '';
   };
 
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [
-    80 # ACME (SSL certificate)
-    47539 # home assistant
-  ];
+  networking = {
+    hostName = "dean-homelab";
+    networkmanager.enable = true;
 
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "dean@kowatsch.de";
+    firewall = {
+      enable = true;
+      logRefusedConnections = true;
+      logRefusedPackets = true;
+      allowedTCPPorts = [
+        80 # ACME (SSL certificate)
+        47539 # home assistant
+      ];
+    };
+  };
+
+  services.atd.enable = true;
+
+  services.sysstat = {
+      enable = true;
+      collect-frequency = "*:00/1";
   };
 
   services.nginx = {
@@ -113,12 +130,6 @@
         proxyWebsockets = true;
       };
     };
-  };
-
-  services.atd.enable = true;
-  services.sysstat = {
-      enable = true;
-      collect-frequency = "*:00/1";
   };
 
   virtualisation.docker = {
@@ -157,8 +168,15 @@
 
   users.groups.git = {};
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+
+
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+  };
 
   system.stateVersion = "25.11";
 }
