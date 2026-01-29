@@ -37,15 +37,17 @@
 
   environment = {
     systemPackages = with pkgs; [
-      tmux
+      iputils # ping, tracepath, arping, clockdiff 
+      netcat
       curl
       wget
-      tree
-      trash-cli
+      nmap
+      openssl
       htop
       sysstat
-      inetutils
-      openssl
+      tmux
+      tree
+      trash-cli
     ];
 
     variables.VIMINIT = "source /etc/vimrc";
