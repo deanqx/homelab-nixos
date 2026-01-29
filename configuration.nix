@@ -11,6 +11,12 @@
     keyMap = "us";
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 28d";
+  };
+
   programs.git = {
     enable = true;
     config = {
@@ -169,8 +175,6 @@
   };
 
   users.groups.git = {};
-
-
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;

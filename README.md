@@ -16,5 +16,5 @@ sudo nixos-rebuild switch
 ## Delete old generations
 
 ```
-sudo nix-collect-garbage -d --delete-older-than 10d
+sudo nix-collect-garbage --delete-older-than 10d
 ```
