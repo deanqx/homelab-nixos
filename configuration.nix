@@ -59,7 +59,6 @@
     variables.VIMINIT = "source /etc/vimrc";
     etc."vimrc".text = ''
       syntax on
-      set number
       set relativenumber
       set autoindent
       set smartindent
