@@ -76,6 +76,11 @@
     defaults.email = "dean@kowatsch.de";
   };
 
+  # only enter sudo password every 60 min
+  security.sudo.extraConfig = ''
+    Defaults timestamp_timeout=60
+  '';
+
   services.openssh = {
     enable = true;
     ports = [ 54359 ];
