@@ -80,6 +80,9 @@
     Defaults timestamp_timeout=60
   '';
 
+  # mDNS, needed for Thread (Home Assistant)
+  services.avahi.enable = true;
+
   services.openssh = {
     enable = true;
     ports = [ 54359 ];
