@@ -39,6 +39,8 @@
       plugins = [ "sudo" ];
       theme = "robbyrussell";
     };
+    # alias is needed for autocompletions
+    shellInit = "docker() { sudo docker \"$@\" }";
   };
 
   environment = {
