@@ -21,15 +21,35 @@
     enable = true;
     config = {
       init.defaultBranch = "main";
+      core.editor = "nvim";
       user.name = "deanqx";
       user.email = "dean@kowatsch.de";
       push.autoSetupRemote = true;
     };
   };
 
-  programs.vim = {
+  programs.neovim = {
     enable = true;
     defaultEditor = true;
+    configure.customLuaRC = ''
+      vim.wo.number = true
+      vim.wo.relativenumber = true
+      vim.opt.autoindent = true
+      vim.opt.smartindent = true
+      vim.cmd("filetype plugin indent on")
+      vim.opt.expandtab = true     -- use spaces instead of tabs
+      vim.opt.tabstop = 2          -- how many spaces a tab counts for
+      vim.opt.shiftwidth = 2       -- indent size
+      vim.opt.softtabstop = 2      -- spaces inserted when pressing Tab
+      vim.keymap.set("v", " y", "\"+y")
+      -- block cursor for all modes
+      vim.opt.guicursor = "n-v-i-c:block-Cursor"
+      -- remove background
+      vim.api.nvim_set_hl(0, "Normal", { bg = "none"})
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none"})
+      vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "none"})
+      vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none"})
+    '';
   };
 
   programs.zsh = {
@@ -56,28 +76,15 @@
       tmux
       tree
       trash-cli
+      kubernetes-helm
     ];
 
-    variables.VIMINIT = "source /etc/vimrc";
-    etc."vimrc".text = ''
-      syntax on
-      set relativenumber
-      set autoindent
-      set smartindent
-      set smarttab       " Tab behaves according to shiftwidth
-      set expandtab      " Convert tabs to spaces (optional, but recommended)
-      set shiftwidth=4   " Default number of spaces for each indent
-      set tabstop=4      " Number of spaces a tab counts for
-      set softtabstop=4  " How many spaces Tab inserts in insert mode
-    '';
+    variables = {
+      KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
+    };
   };
 
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "dean@kowatsch.de";
-  };
-
-  # only enter sudo password every 60 min
+  # only require sudo password every 60 min
   security.sudo.extraConfig = ''
     Defaults timestamp_timeout=60
   '';
@@ -110,7 +117,8 @@
       logRefusedPackets = true;
       allowedTCPPorts = [
         80 # ACME (SSL certificate)
-        47539 # home assistant
+        6443 # k3s pod communication
+        47539 # nginx SSH
       ];
     };
   };
@@ -122,43 +130,84 @@
       collect-frequency = "*:00/1";
   };
 
+  services.k3s = {
+    enable = true;
+    role = "server"; # "agent" for worker only
+    extraFlags = [
+      "--write-kubeconfig-mode 640"
+      "--write-kubeconfig-group k3s"
+    ];
+  };
+
+  # Let's Encrypt HTTPS verification
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "dean@kowatsch.de";
+  };
+
   services.nginx = {
     enable = true;
     user = "nginx";
     group = "nginx";
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
+  };
 
-    virtualHosts."deanqx.kowi.it" =  {
-      enableACME = true;
-      forceSSL = true; # required for ssl to be added to the config
+  # TODO deanqx -> home
+  # Homeassistant
+  services.nginx.virtualHosts."home.kowi.it" = {
+    enableACME = true;
+    forceSSL = true; # required for ssl to be added to the config
 
-      listen = [{
-        addr = "0.0.0.0";
-        port = 80;
-      }{
-        addr = "0.0.0.0";
-        port = 47539;
-        ssl = true;
-      }];
+    listen = [{
+      addr = "0.0.0.0";
+      port = 80;
+    }{
+      addr = "0.0.0.0";
+      port = 47539;
+      ssl = true;
+    }];
 
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8123/";
-        proxyWebsockets = true;
-      };
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:8123/";
+      proxyWebsockets = true;
+    };
+  };
+
+  # Nextcloud
+  services.nginx.virtualHosts."cloud.kowi.it" = {
+    enableACME = true;
+    forceSSL = true; # required for ssl to be added to the config
+
+    listen = [{
+      addr = "0.0.0.0";
+      port = 80;
+    }{
+      addr = "0.0.0.0";
+      port = 47539;
+      ssl = true;
+    }];
+
+    # forwards to Kubernetes Ingress
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:1234/";
+      proxyWebsockets = true;
     };
   };
 
   virtualisation.docker = {
-      enable = true;
-      daemon.settings = {
-        insecure-registries = [ "dean-homelab:5000" ];
-      };
+    enable = true;
+    daemon.settings = {
+      insecure-registries = [ "dean-homelab:5000" ];
+    };
   };
+
+  # allows access to manage Kubernetes cluster
+  users.groups.k3s = {};
 
   users.users.dean = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable `sudo` for the user.
+    extraGroups = [ "wheel" "k3s" ]; # Enable `sudo` for the user.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean-home"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIS1EgZ67VX7KNZ1IOCAwVFfZrLZLdEHlG6rGVoSJUiz dean-home-windows"
