@@ -110,6 +110,7 @@
   networking = {
     hostName = "dean-homelab";
     networkmanager.enable = true;
+    nftables.enable = true;
 
     firewall = {
       enable = true;
