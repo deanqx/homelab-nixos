@@ -54,13 +54,28 @@
 
   programs.zsh = {
     enable = true;
-    ohMyZsh = {
-      enable = true;
-      plugins = [ "sudo" ];
-      theme = "robbyrussell";
-    };
-    # alias is needed for autocompletions
-    shellInit = "docker() { sudo docker \"$@\" }";
+    histSize = 80000;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+  
+    interactiveShellInit = ''
+      autoload -U colors && colors
+      setopt PROMPT_SUBST
+
+      # Fix Ctrl + Left/Right arrows
+      bindkey "^[[1;5C" forward-word
+      bindkey "^[[1;5D" backward-word
+      # Bind Ctrl + U to delete the entire line
+      bindkey "^U" kill-whole-line
+
+      # needed for docker autocompletion
+      docker() { sudo /usr/bin/docker "$@" }
+    '';
+  
+    promptInit = ''
+      PROMPT='%F{magenta}[%B%F{cyan}%n%F{white}@%F{cyan}%M%b%F{magenta}] %B%F{white}%~%b %F{magenta}$ %f'
+      ZSH_HIGHLIGHT_STYLES[path]='bold'
+    '';
   };
 
   environment = {
