@@ -57,26 +57,42 @@
     histSize = 80000;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
-  
-    interactiveShellInit = ''
-      autoload -U colors && colors
-      setopt PROMPT_SUBST
-
-      # Fix Ctrl + Left/Right arrows
-      bindkey "^[[1;5C" forward-word
-      bindkey "^[[1;5D" backward-word
-      # Bind Ctrl + U to delete the entire line
-      bindkey "^U" kill-whole-line
-
-      # needed for docker autocompletion
-      docker() { sudo /usr/bin/docker "$@" }
-    '';
-  
-    promptInit = ''
-      PROMPT='%F{magenta}[%B%F{cyan}%n%F{white}@%F{cyan}%M%b%F{magenta}] %B%F{white}%~%b %F{magenta}$ %f'
-      ZSH_HIGHLIGHT_STYLES[path]='bold'
-    '';
   };
+  
+  programs.zsh.promptInit = ''
+    # needed for docker autocompletion
+    docker() { sudo /usr/bin/docker "$@" }
+
+    autoload -U colors && colors
+    setopt PROMPT_SUBST
+
+    # Fix Ctrl + Left/Right arrows
+    bindkey "^[[1;5C" forward-word
+    bindkey "^[[1;5D" backward-word
+    # Bind Ctrl + U to delete the entire line
+    bindkey "^U" kill-whole-line
+
+    prepend-sudo() {
+        if [[ -z $BUFFER ]]; then
+            # If the line is empty, get the last command from history
+            BUFFER="sudo $(fc -ln -1)"
+            # Move cursor to the end of the line
+            CURSOR=''${#BUFFER}
+        elif [[ $BUFFER == sudo\ * ]]; then
+            # If already sudo, remove it
+            LBUFFER="''${LBUFFER#sudo }"
+        else
+            LBUFFER="sudo $BUFFER"
+        fi
+    }
+    
+    zle -N prepend-sudo
+    bindkey '^[^[' prepend-sudo
+
+  
+    PROMPT='%F{magenta}[%B%F{cyan}%n%F{white}@%F{cyan}%M%b%F{magenta}] %B%F{white}%~%b %F{magenta}$ %f'
+    ZSH_HIGHLIGHT_STYLES[path]='bold'
+  '';
 
   environment = {
     systemPackages = with pkgs; [
@@ -169,7 +185,6 @@
     recommendedTlsSettings = true;
   };
 
-  # TODO deanqx -> home
   # Homeassistant
   services.nginx.virtualHosts."home.kowi.it" = {
     enableACME = true;
