@@ -88,7 +88,6 @@
     
     zle -N prepend-sudo
     bindkey '^[^[' prepend-sudo
-
   
     PROMPT='%F{magenta}[%B%F{cyan}%n%F{white}@%F{cyan}%M%b%F{magenta}] %B%F{white}%~%b %F{magenta}$ %f'
     ZSH_HIGHLIGHT_STYLES[path]='bold'
@@ -112,6 +111,11 @@
 
     variables = {
       KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
+    };
+
+    shellAliases = {
+      kubectl = "sudo -E kubectl";
+      helm = "sudo -E helm";
     };
   };
 
@@ -164,10 +168,8 @@
 
   services.k3s = {
     enable = true;
-    role = "server"; # "agent" for worker only
+    role = "server";
     extraFlags = [
-      "--write-kubeconfig-mode 640"
-      "--write-kubeconfig-group k3s"
     ];
   };
 
@@ -233,12 +235,9 @@
     };
   };
 
-  # allows access to manage Kubernetes cluster
-  users.groups.k3s = {};
-
   users.users.dean = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "k3s" ]; # Enable `sudo` for the user.
+    extraGroups = [ "wheel" ]; # Enable `sudo` for the user.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean-home"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIS1EgZ67VX7KNZ1IOCAwVFfZrLZLdEHlG6rGVoSJUiz dean-home-windows"
