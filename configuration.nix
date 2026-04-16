@@ -153,8 +153,8 @@
       logRefusedPackets = true;
       allowedTCPPorts = [
         80 # ACME (SSL certificate)
+        443 # nginx reverse proxy SSL
         6443 # k3s pod communication
-        47539 # nginx SSH
       ];
     };
   };
@@ -170,6 +170,8 @@
     enable = true;
     role = "server";
     extraFlags = [
+      # traefik is installed with Helm for more control
+      "--disable=traefik"
     ];
   };
 
@@ -183,8 +185,17 @@
     enable = true;
     user = "nginx";
     group = "nginx";
+    package = pkgs.angie;
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
+    recommendedGzipSettings = true;
+    appendHttpConfig = ''
+      log_format verbose_format '[$time_local] $remote_addr $remote_user -> '
+                                '$http_host $request -> $status '
+                                '"$http_user_agent" (in: $request_length, out: $body_bytes_sent)';
+
+      access_log /var/log/nginx/access.log verbose_format;
+    '';
   };
 
   # Homeassistant
@@ -197,7 +208,7 @@
       port = 80;
     }{
       addr = "0.0.0.0";
-      port = 47539;
+      port = 443;
       ssl = true;
     }];
 
@@ -207,23 +218,28 @@
     };
   };
 
-  # Nextcloud
-  services.nginx.virtualHosts."cloud.kowi.it" = {
+  # Dashboard for Kubernetes
+  services.nginx.virtualHosts."dashboard.kowi.it" = {
     enableACME = true;
     forceSSL = true; # required for ssl to be added to the config
+
+    # nix-shell --packages apacheHttpd --extra-experimental-features flakes \
+    # --run 'sudo htpasswd -B -c /etc/nginx/.dashboard-passwd USER'
+    # sudo chmod 600 /etc/nginx/.dashboard-passwd
+    basicAuthFile = "/etc/nginx/.dashboard-passwd";
 
     listen = [{
       addr = "0.0.0.0";
       port = 80;
     }{
       addr = "0.0.0.0";
-      port = 47539;
+      port = 443;
       ssl = true;
     }];
 
     # forwards to Kubernetes Ingress
     locations."/" = {
-      proxyPass = "http://127.0.0.1:1234/";
+      proxyPass = "http://127.0.0.1:9080/";
       proxyWebsockets = true;
     };
   };
