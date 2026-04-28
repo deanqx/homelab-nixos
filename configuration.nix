@@ -127,6 +127,10 @@
   # mDNS, needed for Thread (Home Assistant)
   services.avahi.enable = true;
 
+  # required for Longhorn
+  services.openiscsi.enable = true;
+  services.openiscsi.name = "iqn.2026-04.it.kowi.iscsi:home";
+
   services.openssh = {
     enable = true;
     ports = [ 54359 ];
@@ -198,7 +202,7 @@
     '';
   };
 
-  # Homeassistant
+  # Home Assistant
   services.nginx.virtualHosts."home.kowi.it" = {
     enableACME = true;
     forceSSL = true; # required for ssl to be added to the config
@@ -214,6 +218,27 @@
 
     locations."/" = {
       proxyPass = "http://127.0.0.1:8123/";
+      proxyWebsockets = true;
+    };
+  };
+
+  # Cloud (hosted in Kubernetes)
+  services.nginx.virtualHosts."cloud.kowi.it" = {
+    enableACME = true;
+    forceSSL = true; # required for ssl to be added to the config
+
+    listen = [{
+      addr = "0.0.0.0";
+      port = 80;
+    }{
+      addr = "0.0.0.0";
+      port = 443;
+      ssl = true;
+    }];
+
+    # forwards to Kubernetes Ingress
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:9080/";
       proxyWebsockets = true;
     };
   };
