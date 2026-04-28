@@ -61,7 +61,7 @@
   
   programs.zsh.promptInit = ''
     # needed for docker autocompletion
-    docker() { sudo /usr/bin/docker "$@" }
+    docker() { sudo docker "$@" }
 
     autoload -U colors && colors
     setopt PROMPT_SUBST
