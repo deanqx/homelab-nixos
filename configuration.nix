@@ -133,7 +133,6 @@
 
   services.openssh = {
     enable = true;
-    ports = [ 54359 ];
     settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "no";
     extraConfig = ''
