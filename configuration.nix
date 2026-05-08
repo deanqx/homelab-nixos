@@ -37,6 +37,7 @@
       vim.opt.autoindent = true
       vim.opt.smartindent = true
       vim.cmd("filetype plugin indent on")
+      vim.opt.scrolloff = 8
       vim.opt.expandtab = true     -- use spaces instead of tabs
       vim.opt.tabstop = 2          -- how many spaces a tab counts for
       vim.opt.shiftwidth = 2       -- indent size
