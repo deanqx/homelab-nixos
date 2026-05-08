@@ -288,9 +288,11 @@
     };
   };
 
+  users.groups.devops = {};
+
   users.users.dean = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable `sudo` for the user.
+    extraGroups = [ "devops" "wheel" ]; # Enable `sudo` for the user.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean-home"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAmMvFppJL6njZ45WthZ3kM1Aq7bdPjbp+IsHUapOMm deanqx-pad"
@@ -299,6 +301,8 @@
     packages = with pkgs; [
     ];
   };
+
+  users.groups.git = {};
 
   # enable git server (https://nixos.wiki/wiki/Git)
   # create repo called ".git":
@@ -314,8 +318,6 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAmMvFppJL6njZ45WthZ3kM1Aq7bdPjbp+IsHUapOMm deanqx-pad"
     ];
   };
-
-  users.groups.git = {};
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
