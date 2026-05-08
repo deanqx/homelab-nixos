@@ -206,6 +206,10 @@
     enableACME = true;
     forceSSL = true; # required for ssl to be added to the config
 
+    extraConfig = ''
+      add_header Strict-Transport-Security 'max-age=15552000; includeSubDomains; preload' always;
+    '';
+
     listen = [{
       addr = "0.0.0.0";
       port = 80;
@@ -225,6 +229,10 @@
   services.nginx.virtualHosts."cloud.kowi.it" = {
     enableACME = true;
     forceSSL = true; # required for ssl to be added to the config
+
+    extraConfig = ''
+      add_header Strict-Transport-Security 'max-age=15552000; includeSubDomains; preload' always;
+    '';
 
     listen = [{
       addr = "0.0.0.0";
@@ -251,6 +259,10 @@
     # --run 'sudo htpasswd -B -c /etc/nginx/.dashboard-passwd USER'
     # sudo chmod 600 /etc/nginx/.dashboard-passwd
     basicAuthFile = "/etc/nginx/.dashboard-passwd";
+
+    extraConfig = ''
+      add_header Strict-Transport-Security 'max-age=15552000; includeSubDomains; preload' always;
+    '';
 
     listen = [{
       addr = "0.0.0.0";
