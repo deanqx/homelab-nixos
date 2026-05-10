@@ -96,18 +96,19 @@
 
   environment = {
     systemPackages = with pkgs; [
-      iputils # ping, tracepath, arping, clockdiff 
-      netcat
       curl
-      wget
+      htop
+      iputils # ping, tracepath, arping, clockdiff 
+      k9s
+      kubernetes-helm
+      netcat
       nmap
       openssl
-      htop
       sysstat
       tmux
-      tree
       trash-cli
-      kubernetes-helm
+      tree
+      wget
     ];
 
     variables = {
@@ -116,6 +117,7 @@
 
     shellAliases = {
       kubectl = "sudo -E kubectl";
+      k9s = "sudo -E k9s";
       helm = "sudo -E helm";
     };
   };
