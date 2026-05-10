@@ -11,6 +11,8 @@
     keyMap = "us";
   };
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -258,8 +260,7 @@
     enableACME = true;
     forceSSL = true; # required for ssl to be added to the config
 
-    # nix-shell --packages apacheHttpd --extra-experimental-features flakes \
-    # --run 'sudo htpasswd -B -c /etc/nginx/.dashboard-passwd USER'
+    # nix-shell --packages apacheHttpd --run 'sudo htpasswd -B -c /etc/nginx/.dashboard-passwd USER'
     # sudo chmod 600 /etc/nginx/.dashboard-passwd
     basicAuthFile = "/etc/nginx/.dashboard-passwd";
 
@@ -329,5 +330,5 @@
     };
   };
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
