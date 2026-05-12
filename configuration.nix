@@ -176,9 +176,11 @@
   services.k3s = {
     enable = true;
     role = "server";
-    extraFlags = [
-      # traefik is installed with Helm for more control
+    extraFlags = [ # installing manually
       "--disable=traefik"
+      "--disable=metrics-server"
+      "--disable=local-storage"
+      "--disable=helm-controller"
     ];
   };
 
