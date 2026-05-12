@@ -1,5 +1,7 @@
 # Homelab NixOS
 
+This repo is hosted on [Codeberg](https://codeberg.org/deanqx/homelab-nixos).
+
 ## Rebuild without updating
 
 ```
