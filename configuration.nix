@@ -58,13 +58,17 @@
   programs.zsh = {
     enable = true;
     histSize = 80000;
+    enableCompletion = true;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
   };
   
   programs.zsh.promptInit = ''
-    # needed for docker autocompletion
+    # needed for command completion
     docker() { sudo docker "$@" }
+    kubectl() { sudo -E kubectl "$@" }
+    helm() { sudo -E helm "$@" }
+    k9s() { sudo -E k9s "$@" }
 
     autoload -U colors && colors
     setopt PROMPT_SUBST
@@ -102,6 +106,7 @@
       htop
       iputils # ping, tracepath, arping, clockdiff 
       k9s
+      kubectl
       kubernetes-helm
       netcat
       nmap
@@ -115,12 +120,6 @@
 
     variables = {
       KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
-    };
-
-    shellAliases = {
-      kubectl = "sudo -E kubectl";
-      k9s = "sudo -E k9s";
-      helm = "sudo -E helm";
     };
   };
 
