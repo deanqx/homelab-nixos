@@ -45,6 +45,17 @@
       vim.opt.shiftwidth = 2       -- indent size
       vim.opt.softtabstop = 2      -- spaces inserted when pressing Tab
       vim.keymap.set("v", " y", "\"+y")
+      vim.g.clipboard = {
+        name = 'OSC 52',
+        copy = {
+          ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+          ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+        },
+        paste = {
+          ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+          ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+        },
+      }
       -- block cursor for all modes
       vim.opt.guicursor = "n-v-i-c:block-Cursor"
       -- remove background
