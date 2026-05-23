@@ -163,18 +163,27 @@
   networking = {
     hostName = "dean-homelab";
     networkmanager.enable = true;
-    nftables.enable = true;
+    # Cilium (Kubernetes) is used as firewall
+    firewall.enable = false;
+    nftables.enable = false;
+  };
 
-    firewall = {
-      enable = true;
-      logRefusedConnections = true;
-      logRefusedPackets = true;
-      allowedTCPPorts = [
-        80 # ACME (SSL certificate)
-        443 # nginx reverse proxy SSL
-        6443 # k3s pod communication
-      ];
-    };
+  services.k3s = {
+    enable = true;
+    role = "server";
+    extraFlags = [
+      # use embedded etcd datastore
+      "--cluster-init"
+
+      # replacing with Cilium
+      "--flannel-backend=none"
+      "--disable-kube-proxy"
+      "--disable-network-policy"
+
+      # disable default ingress and load balancer
+      "--disable=traefik"
+      "--disable=servicelb"
+    ];
   };
 
   services.atd.enable = true;
@@ -184,17 +193,6 @@
       collect-frequency = "*:00/1";
   };
 
-  services.k3s = {
-    enable = true;
-    role = "server";
-    extraFlags = [ # installing manually
-      "--disable=traefik"
-      "--disable=metrics-server"
-      "--disable=local-storage"
-      "--disable=helm-controller"
-    ];
-  };
-
   # Let's Encrypt HTTPS verification
   security.acme = {
     acceptTerms = true;
@@ -202,7 +200,7 @@
   };
 
   services.nginx = {
-    enable = true;
+    enable = false;
     user = "nginx";
     group = "nginx";
     package = pkgs.angie;
