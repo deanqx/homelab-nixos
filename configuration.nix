@@ -66,50 +66,16 @@
     '';
   };
 
-  programs.zsh = {
+  programs.fish = {
     enable = true;
-    histSize = 80000;
-    enableCompletion = true;
-    autosuggestions.enable = true;
-    syntaxHighlighting.enable = true;
+    promptInit = ''
+      set -U fish_greeting
+      alias rm="rm -i"
+
+      # show all themes with: fish_config theme show
+      fish_config theme choose catppuccin-mocha
+    '';
   };
-  
-  programs.zsh.promptInit = ''
-    # needed for command completion
-    docker() { sudo docker "$@" }
-    kubectl() { sudo -E kubectl "$@" }
-    helm() { sudo -E helm "$@" }
-    k9s() { sudo -E k9s "$@" }
-
-    autoload -U colors && colors
-    setopt PROMPT_SUBST
-
-    # Fix Ctrl + Left/Right arrows
-    bindkey "^[[1;5C" forward-word
-    bindkey "^[[1;5D" backward-word
-    # Bind Ctrl + U to delete the entire line
-    bindkey "^U" kill-whole-line
-
-    prepend-sudo() {
-        if [[ -z $BUFFER ]]; then
-            # If the line is empty, get the last command from history
-            BUFFER="sudo $(fc -ln -1)"
-            # Move cursor to the end of the line
-            CURSOR=''${#BUFFER}
-        elif [[ $BUFFER == sudo\ * ]]; then
-            # If already sudo, remove it
-            LBUFFER="''${LBUFFER#sudo }"
-        else
-            LBUFFER="sudo $BUFFER"
-        fi
-    }
-    
-    zle -N prepend-sudo
-    bindkey '^[^[' prepend-sudo
-  
-    PROMPT='%F{magenta}[%B%F{cyan}%n%F{white}@%F{cyan}%M%b%F{magenta}] %B%F{white}%~%b %F{magenta}$ %f'
-    ZSH_HIGHLIGHT_STYLES[path]='bold'
-  '';
 
   environment = {
     systemPackages = with pkgs; [
@@ -310,7 +276,7 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+E5ey8cjpUlHALMBFbDy9ijCd0M+w0iz0VIIE5cM77 dean-home"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAmMvFppJL6njZ45WthZ3kM1Aq7bdPjbp+IsHUapOMm deanqx-pad"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
     packages = with pkgs; [
     ];
   };
