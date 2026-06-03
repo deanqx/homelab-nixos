@@ -159,11 +159,13 @@
     ];
   };
 
+  # run commands at specific time
   services.atd.enable = true;
 
   services.sysstat = {
       enable = true;
-      collect-frequency = "*:00/1";
+      # every 10 minutes
+      collect-frequency = "*:00/10";
   };
 
   # Let's Encrypt HTTPS verification
