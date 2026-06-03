@@ -33,8 +33,6 @@
     config = {
       init.defaultBranch = "main";
       core.editor = "nvim";
-      user.name = "deanqx";
-      user.email = "dean@kowatsch.de";
       push.autoSetupRemote = true;
     };
   };
