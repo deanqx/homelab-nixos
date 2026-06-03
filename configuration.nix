@@ -86,15 +86,14 @@
 
   environment = {
     systemPackages = with pkgs; [
+      # always sort alphabetically:
       btop
       curl
       htop
       iputils # ping, tracepath, arping, clockdiff 
-      k9s
       kubectl
       kubernetes-helm
       netcat
-      nmap
       openssl
       sysstat
       tmux
