@@ -79,6 +79,7 @@
 
   environment = {
     systemPackages = with pkgs; [
+      btop
       curl
       htop
       iputils # ping, tracepath, arping, clockdiff 
