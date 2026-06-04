@@ -148,6 +148,10 @@
       # use embedded etcd datastore
       "--cluster-init"
 
+      # expose for monitoring
+      "--kube-controller-manager-arg='bind-address=0.0.0.0'"
+      "--kube-scheduler-arg='bind-address=0.0.0.0'"
+
       # replacing with Cilium
       "--flannel-backend=none"
       "--disable-kube-proxy"
