@@ -1,13 +1,14 @@
-NixOS Homelab Configuration
+Homelab NixOS Configuration
 ===========================
+
+_A project written by a human_
 
 This repository contains the NixOS Flake configurations for provisioning and
 managing my homelab infrastructure.
 
-- Main Repository: [Codeberg deanqx/homelab-nixos](https://codeberg.org/deanqx/homelab-nixos).
-- Mirror: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos).
-- The Kubernetes configurations for services running on the cluster can be
-  found on [Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes).
+- Main Repository: [Codeberg deanqx/homelab-nixos](https://codeberg.org/deanqx/homelab-nixos)
+- Mirror: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos)
+- Server cluster confg: [Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes)
 
 Development
 ===========
