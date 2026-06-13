@@ -18,7 +18,7 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 28d";
+      options = "--delete-older-than 14d";
     };
 
     # remove dublicate packages
@@ -220,6 +220,7 @@
     kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       systemd-boot.enable = true;
+      systemd-boot.configurationLimit = 5;
       efi.canTouchEfiVariables = true;
     };
   };
