@@ -95,6 +95,8 @@
       kubernetes-helm
       netcat
       openssl
+      restic
+      sqlite
       sysstat
       tmux
       trash-cli
