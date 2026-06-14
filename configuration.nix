@@ -28,6 +28,29 @@
     };
   };
 
+  systemd.services."home_assistant_backup" = {
+    path = with pkgs; [
+      bash
+      restic
+      sqlite
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      ExecStart = "/srv/home_assistant/backup.sh";
+    };
+  };
+
+  systemd.timers."home_assistant_backup" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      Unit = "home_assistant_backup.service";
+      OnCalendar = "*-*-* 03:00:00";
+      # run even if system was off at the time
+      Persistent = true;
+    };
+  };
+
   programs.git = {
     enable = true;
     config = {
