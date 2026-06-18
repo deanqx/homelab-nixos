@@ -7,7 +7,6 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   console = {
-    font = "Lat2-Terminus16";
     keyMap = "us";
   };
 
@@ -102,8 +101,10 @@
       set -U fish_greeting
       alias rm="rm -i"
 
-      # show all themes with: fish_config theme show
-      fish_config theme choose catppuccin-mocha
+      if test "$TERM" != "linux"
+        # show all themes with: fish_config theme show
+        fish_config theme choose catppuccin-mocha
+      end
     '';
   };
 
