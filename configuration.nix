@@ -119,15 +119,12 @@
       iputils # ping, tracepath, arping, clockdiff 
       kubectl
       kubernetes-helm
-      netcat
       openssl
       restic
-      sqlite
       sysstat
       tmux
       trash-cli
       tree
-      wget
     ];
 
     variables = {
@@ -139,9 +136,6 @@
   security.sudo.extraConfig = ''
     Defaults timestamp_timeout=60
   '';
-
-  # mDNS, needed for Thread (Home Assistant)
-  services.avahi.enable = true;
 
   # required for Longhorn
   services.openiscsi.enable = true;
