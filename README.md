@@ -13,6 +13,8 @@ managing my homelab infrastructure.
 Development
 ===========
 
+Find configuration reference at [search.nixos.org](https://search.nixos.org/).
+
 The configuration files are designed to live at `/etc/nixos`.
 Ensure you are in that directory before running the commands below.
 
