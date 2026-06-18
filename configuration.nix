@@ -157,10 +157,16 @@
 
   networking = {
     hostName = "dean-homelab";
-    networkmanager.enable = true;
+    useNetworkd = true;
     # Cilium (Kubernetes) is used as firewall
     firewall.enable = false;
     nftables.enable = false;
+  };
+
+  systemd.network.networks."10-enp1s0" = {
+    matchConfig.Name = "enp1s0";
+    networkConfig.DHCP = "ipv4";
+    networkConfig.IPv6AcceptRA = true;
   };
 
   services.k3s = {
