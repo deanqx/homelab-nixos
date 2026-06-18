@@ -69,10 +69,12 @@
       vim.opt.smartindent = true
       vim.cmd("filetype plugin indent on")
       vim.opt.scrolloff = 8
-      vim.opt.expandtab = true     -- use spaces instead of tabs
-      vim.opt.tabstop = 2          -- how many spaces a tab counts for
-      vim.opt.shiftwidth = 2       -- indent size
-      vim.opt.softtabstop = 2      -- spaces inserted when pressing Tab
+      -- search only case sensitive when one upper case letter is used
+      vim.opt.smartcase = true
+      vim.opt.expandtab = true  -- use spaces instead of tabs
+      vim.opt.tabstop = 2       -- how many spaces a tab counts for
+      vim.opt.shiftwidth = 2    -- indent size
+      vim.opt.softtabstop = 2   -- spaces inserted when pressing Tab
       vim.keymap.set("v", " y", "\"+y")
       vim.g.clipboard = {
         name = 'OSC 52',
