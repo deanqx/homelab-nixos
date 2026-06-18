@@ -213,6 +213,9 @@
     };
   };
 
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
   users.groups.devops = {};
 
   users.users.dean = {
