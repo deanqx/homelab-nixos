@@ -168,10 +168,27 @@
     nftables.enable = false;
   };
 
-  systemd.network.networks."10-enp1s0" = {
-    matchConfig.Name = "enp1s0";
-    networkConfig.DHCP = "ipv4";
-    networkConfig.IPv6AcceptRA = true;
+  systemd.network.netdevs = {
+    "10-br0" = {
+      netdevConfig = {
+        Kind = "bridge";
+        Name = "br0";
+      };
+    };
+  };
+
+  systemd.network.networks = {
+    "20-ethernet" = {
+      matchConfig.Name = "enp1s0";
+      networkConfig.Bridge = "br0";
+      linkConfig.RequiredForOnline = "enslaved";
+    };
+
+    "30-br0" = {
+      matchConfig.Name = "br0";
+      networkConfig.DHCP = "yes";
+      linkConfig.RequiredForOnline = "routable";
+    };
   };
 
   services.k3s = {
