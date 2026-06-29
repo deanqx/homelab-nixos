@@ -113,15 +113,20 @@
   environment = {
     systemPackages = with pkgs; [
       # always sort alphabetically:
+      bind # dig, nslookup, ...
       btop
       curl
       htop
-      iputils # ping, tracepath, arping, clockdiff 
+      iputils # ping, tracepath, ...
       kubectl
       kubernetes-helm
+      lsof
+      netcat
       openssl
       restic
+      socat
       sysstat
+      tcpdump
       tmux
       trash-cli
       tree
