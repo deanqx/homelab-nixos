@@ -31,12 +31,12 @@
     path = with pkgs; [
       bash
       restic
-      sqlite
+      libvirt
     ];
     serviceConfig = {
       Type = "oneshot";
       User = "root";
-      ExecStart = "/srv/home_assistant/backup.sh";
+      ExecStart = "/usr/local/sbin/home_assistant_backup.sh";
     };
   };
 
