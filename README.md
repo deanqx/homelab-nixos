@@ -27,10 +27,16 @@ git add -A
 ```
 
 To rebuild and switch to the current configuration without updating the
-flake inputs:
+flake inputs (uses hostname to select config):
 
 ```zsh
 sudo nixos-rebuild switch --flake .
+```
+
+The `test` option can be used to auto revert changes after restarting.
+
+```zsh
+sudo nixos-rebuild test --flake .
 ```
 
 ## Update packages
