@@ -13,7 +13,7 @@
     serviceConfig = {
       Type = "oneshot";
       User = "root";
-      ExecStart = "/usr/local/sbin/home_assistant_backup.sh";
+      ExecStart = "/srv/home_assistant/backup.sh";
     };
   };
 
