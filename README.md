@@ -22,20 +22,20 @@ Ensure you are in that directory before running the commands below.
 
 Nix will ignore any files not tracked by Git. So it is required to stage them:
 
-```zsh
+```sh
 git add -A
 ```
 
 To rebuild and switch to the current configuration without updating the
 flake inputs (uses hostname to select config):
 
-```zsh
+```sh
 sudo nixos-rebuild switch --flake .
 ```
 
 The `test` option can be used to auto revert changes after restarting.
 
-```zsh
+```sh
 sudo nixos-rebuild test --flake .
 ```
 
@@ -43,20 +43,20 @@ sudo nixos-rebuild test --flake .
 
 Nix will ignore any files not tracked by Git. So it is required to stage them:
 
-```zsh
+```sh
 git add -A
 ```
 
 To update the flake.lock file and pull in the latest package versions from
 your channels:
 
-```zsh
+```sh
 sudo nix flake update
 ```
 
 To apply the updates immediately after updating inputs:
 
-```zsh
+```sh
 sudo nixos-rebuild switch --flake .
 ```
 
@@ -84,4 +84,41 @@ Example Output:
 
 ```sh
 sudo /nix/var/nix/profiles/system-106-link/bin/switch-to-configuration switch
+```
+
+## Deployments Location and Permissions
+
+- Deployed apps with Docker or scripts relating to them are under `/srv`.
+- Kubernetes Cluster deployed apps are managed with GitOps ([Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes)).
+
+### Creating a new project
+
+1. Create the project folder
+
+```sh
+sudo mkdir /srv/new_project
+```
+
+2. Set generic ownership
+
+```sh
+sudo chown -R root:devops /srv/new_project
+```
+
+3. Permissions
+
+"2" Subdirectories inherit `devops` group, "77" full access for `devops` group,
+others get no access.
+
+```sh
+sudo chmod 2770 /srv/my-new-project
+```
+
+4. Default permissions for subdirectories
+
+Set default (`-d`) and modify (`-m`) directory's primary (`:empty:`) group (`g`)
+setting to "read, write, traverse". Give others (`o`) no permissions (`---`).
+
+```sh
+sudo setfacl -d -m g::rwx,o::--- /srv/my-new-project
 ```
