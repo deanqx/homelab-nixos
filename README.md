@@ -10,8 +10,8 @@ managing my homelab infrastructure.
 - Mirror: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos)
 - Server cluster confg: [Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes)
 
-Development
-===========
+Developing
+==========
 
 Find configuration reference at [search.nixos.org](https://search.nixos.org/).
 
@@ -58,4 +58,30 @@ To apply the updates immediately after updating inputs:
 
 ```zsh
 sudo nixos-rebuild switch --flake .
+```
+
+### Rollback
+
+The best option to rollback a faulty change is to undo it with Git or manually
+in the config and rebuild again. Sometimes this is not possible
+(e.g. no internet connection) then `nix-env` can be used.
+
+1. Find working generation
+
+```zsh
+nix-env --list-generations -p /nix/var/nix/profiles/system
+```
+
+Example Output:
+
+```
+  105   2026-06-28 14:20:11   
+  106   2026-07-01 09:15:32   
+  107   2026-07-03 11:00:00   (Current)
+```
+
+2. Switch to the working generation
+
+```sh
+sudo /nix/var/nix/profiles/system-106-link/bin/switch-to-configuration switch
 ```
