@@ -18,6 +18,13 @@
           ./hosts/storage-01/config.nix
         ];
       };
+      "worker-01" = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./common.nix
+          ./hosts/worker-01/hardware.nix
+          ./hosts/worker-01/config.nix
+        ];
+      };
     };
   };
 }
