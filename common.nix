@@ -106,6 +106,15 @@
     ];
   };
 
+  services.comin = {
+    enable = true;
+    remotes = [{
+      name = "origin";
+      url = "https://github.com/deanqx/homelab-nixos";
+      branches.main.name = "main";
+    }];
+  };
+
   nix = {
     settings.experimental-features = [ "nix-command" "flakes" ];
 

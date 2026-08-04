@@ -6,9 +6,28 @@ _A project written by a human_
 This repository contains the NixOS Flake configurations for provisioning and
 managing my homelab infrastructure.
 
-- Main Repository: [Codeberg deanqx/homelab-nixos](https://codeberg.org/deanqx/homelab-nixos)
-- Mirror: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos)
-- Server cluster confg: [Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes)
+- Repository: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos)
+- Server cluster config: [Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes)
+
+Deployment
+==========
+
+## Git sync
+
+The NixOS configuration on each server is automatically updated through Git.
+When a commit gets pushed all server pull it and apply it using Comin.
+
+To inspect what Comin is currently fetching, building, or failing on:
+
+```sh
+journalctl -u comin -f
+```
+
+To see the latest deployed commit and poll status:
+
+```sh
+comin status
+```
 
 Developing
 ==========
