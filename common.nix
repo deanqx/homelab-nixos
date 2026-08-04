@@ -5,6 +5,7 @@
   i18n.defaultLocale = "en_US.UTF-8";
   console.keyMap = "us";
 
+  environment.variables = { EDITOR = "vim"; };
   environment.systemPackages = with pkgs; [
     # IMPORTANT
     # 1. Check if an Option exists first: https://search.nixos.org/options
@@ -27,6 +28,7 @@
     tmux
     trash-cli
     tree
+    vim
   ];
 
   networking.useNetworkd = true;
@@ -38,47 +40,8 @@
     enable = true;
     config = {
       init.defaultBranch = "main";
-      core.editor = "nvim";
       push.autoSetupRemote = true;
     };
-  };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    configure.customLuaRC = ''
-      vim.wo.number = true
-      vim.wo.relativenumber = true
-      vim.opt.autoindent = true
-      vim.opt.smartindent = true
-      vim.cmd("filetype plugin indent on")
-      vim.opt.scrolloff = 8
-      -- search only case sensitive when one upper case letter is used
-      vim.opt.smartcase = true
-      vim.opt.expandtab = true  -- use spaces instead of tabs
-      vim.opt.tabstop = 2       -- how many spaces a tab counts for
-      vim.opt.shiftwidth = 2    -- indent size
-      vim.opt.softtabstop = 2   -- spaces inserted when pressing Tab
-      vim.keymap.set("v", " y", "\"+y")
-      vim.g.clipboard = {
-        name = 'OSC 52',
-        copy = {
-          ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-          ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-        },
-        paste = {
-          ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-          ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-        },
-      }
-      -- block cursor for all modes
-      vim.opt.guicursor = "n-v-i-c:block-Cursor"
-      -- remove background
-      vim.api.nvim_set_hl(0, "Normal", { bg = "none"})
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none"})
-      vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "none"})
-      vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none"})
-    '';
   };
 
   programs.fish = {
@@ -89,7 +52,7 @@
 
       if test "$TERM" != "linux"
         # show all themes with: fish_config theme show
-        fish_config theme choose catppuccin-mocha
+        fish_config theme choose catppuccin-mocha --color-theme=dark
       end
     '';
   };
