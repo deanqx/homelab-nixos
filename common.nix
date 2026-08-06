@@ -28,6 +28,7 @@
     tmux
     trash-cli
     tree
+    usbutils
     vim
   ];
 

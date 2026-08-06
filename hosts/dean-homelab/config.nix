@@ -51,7 +51,31 @@
   };
 
   virtualisation.libvirtd.enable = true;
+  # suspend sometimes failed to restore
+  virtualisation.libvirtd.onShutdown = "shutdown";
   virtualisation.spiceUSBRedirection.enable = true;
+
+  systemd.services.haos-start = {
+    description = "Start haos VM after devices are available";
+    after = [ "libvirtd.service" ];
+    requires = [ "libvirtd.service" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "haos-start" ''
+        set -e
+        if ${pkgs.usbutils}/bin/lsusb -d 10c4:ea60 >/dev/null 2>&1 && \
+           ${pkgs.usbutils}/bin/lsusb -d 0bda:b85b >/dev/null 2>&1; then
+             ${pkgs.libvirt}/bin/virsh start haos
+        fi
+      '';
+    };
+  };
+
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea60", TAG+="systemd", ENV{SYSTEMD_WANTS}="haos-start.service"
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="b85b", TAG+="systemd", ENV{SYSTEMD_WANTS}="haos-start.service"
+  '';
 
   services.k3s = {
     enable = true;
