@@ -7,7 +7,7 @@ This repository contains the NixOS Flake configurations for provisioning and
 managing my homelab infrastructure.
 
 - Repository: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos)
-- Server cluster config: [Codeberg deanqx/homelab-kubernetes](https://codeberg.org/deanqx/homelab-kubernetes)
+- Server cluster config: [GitHub deanqx/homelab-kubernetes](https://github.com/deanqx/homelab-kubernetes)
 
 Deployment
 ==========
