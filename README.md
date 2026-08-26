@@ -9,25 +9,10 @@ managing my homelab infrastructure.
 - Repository: [GitHub deanqx/homelab-nixos](https://github.com/deanqx/homelab-nixos)
 - Server cluster config: [GitHub deanqx/homelab-kubernetes](https://github.com/deanqx/homelab-kubernetes)
 
-Deployment
-==========
+Installation
+============
 
-## Git sync
-
-The NixOS configuration on each server is automatically updated through Git.
-When a commit gets pushed all server pull it and apply it using Comin.
-
-To inspect what Comin is currently fetching, building, or failing on:
-
-```sh
-journalctl -u comin -f
-```
-
-To see the latest deployed commit and poll status:
-
-```sh
-comin status
-```
+The guide can be found in [installation.md](./installation.md).
 
 Developing
 ==========
